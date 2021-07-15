@@ -4,3 +4,7 @@
 
 ## 已完成
 - [01_redux](https://github.com/Middletwo-Kid/learn-source/blob/main/01_redux.md)
+- [02_redux-thunk](https://github.com/Middletwo-Kid/learn-source/blob/main/02_redux-thunk.md)
+
+## 附录
+- [源码中有用的代码片段](https://github.com/Middletwo-Kid/learn-source/blob/main/00_appendix.md)
