@@ -45,3 +45,58 @@ export default function compose(...funcs){
     return funcs.reduce((a, b) => (...args) => a(b(...args)))
 }
 ```
+
+## 浅比较
+
+| 值       | ===   | is(x,y) |
+| -------- | ----- | ------- |
+| NaN、NaN | false | true    |
+| 0、+0    | true  | true    |
+| 0、-0    | true  | false   |
+| +0、-0   | true  | false   |
+
+```js
+// Object.is可以对基本数据类型:null,undefined,number,string,boolean做出非常精确的比较，
+// 但是对于引用数据类型是没办法直接比较的。
+function is(x, y) {
+  if (x === y) {
+    // 处理0、+0和-0的情况
+    return x !== 0 || y !== 0 || 1 / x === 1 / y
+  } else {
+    // 处理NaN的情况
+    return x !== x && y !== y
+  }
+}
+
+export default function shallowEqual(objA, objB) {
+  // 先用is来判断两个变量是否相等
+  if (is(objA, objB)) return true
+    
+  if (
+    typeof objA !== 'object' ||
+    objA === null ||
+    typeof objB !== 'object' ||
+    objB === null
+  ) {
+    return false
+  }
+  
+  // 遍历两个对象上的键值对，一次进行比较
+  const keysA = Object.keys(objA)
+  const keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) return false
+
+  for (let i = 0; i < keysA.length; i++) {
+    if (
+      // Object.prototype.hasOwnProperty 和 in 运算符不同，该方法会忽略掉那些从原型链上继承到的属性。
+      !Object.prototype.hasOwnProperty.call(objB, keysA[i]) ||
+      !is(objA[keysA[i]], objB[keysA[i]])
+    ) {
+      return false
+    }
+  }
+
+  return true
+}
+```
